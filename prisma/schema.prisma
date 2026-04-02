@@ -1,0 +1,73 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model exercises {
+  id                String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name              String
+  muscle_group      String?
+  notes             String?
+  created_at        DateTime            @default(now()) @db.Timestamp(6)
+  updated_at        DateTime            @default(now()) @db.Timestamp(6)
+  workout_exercises workout_exercises[]
+
+  @@index([muscle_group])
+  @@index([name])
+}
+
+model sets {
+  id                  String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  workout_exercise_id String            @db.Uuid
+  set_number          Int
+  reps                Int
+  weight              Decimal?          @db.Decimal(8, 2)
+  weight_unit         weight_unit?
+  notes               String?
+  created_at          DateTime          @default(now()) @db.Timestamp(6)
+  updated_at          DateTime          @default(now()) @db.Timestamp(6)
+  workout_exercises   workout_exercises @relation(fields: [workout_exercise_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "sets_workout_exercise_id_workout_exercises_id_fk")
+
+  @@index([workout_exercise_id])
+  @@index([workout_exercise_id, set_number])
+}
+
+model workout_exercises {
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  workout_id  String    @db.Uuid
+  exercise_id String    @db.Uuid
+  position    Int
+  notes       String?
+  created_at  DateTime  @default(now()) @db.Timestamp(6)
+  updated_at  DateTime  @default(now()) @db.Timestamp(6)
+  sets        sets[]
+  exercises   exercises @relation(fields: [exercise_id], references: [id], onUpdate: NoAction, map: "workout_exercises_exercise_id_exercises_id_fk")
+  workouts    workouts  @relation(fields: [workout_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "workout_exercises_workout_id_workouts_id_fk")
+
+  @@index([exercise_id])
+  @@index([workout_id])
+  @@index([workout_id, position])
+}
+
+model workouts {
+  id                String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id           String
+  name              String?
+  date              String
+  notes             String?
+  created_at        DateTime            @default(now()) @db.Timestamp(6)
+  updated_at        DateTime            @default(now()) @db.Timestamp(6)
+  workout_exercises workout_exercises[]
+
+  @@index([user_id, date])
+  @@index([user_id])
+}
+
+enum weight_unit {
+  lbs
+  kg
+}
