@@ -12,3 +12,15 @@ export async function getWorkoutsForDate(userId: string, date: string) {
     .from(workouts)
     .where(and(eq(workouts.userId, userId), eq(workouts.date, date)));
 }
+
+export async function createWorkout(
+  userId: string,
+  name: string,
+  date: string,
+  notes?: string
+) {
+  return db
+    .insert(workouts)
+    .values({ userId, name, date, notes })
+    .returning();
+}
