@@ -8,6 +8,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Before writing any code, Claude Code MUST first check the `/docs` directory for a relevant documentation file and read it.** If a relevant doc exists, follow it strictly. Do not rely on training data or assumptions about library APIs — always consult `/docs` first.
 
+- /docs/ui.md
+- /docs/data-fetching.md
+
 ## Commands
 
 ```bash
