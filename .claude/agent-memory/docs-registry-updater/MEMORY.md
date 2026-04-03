@@ -1,0 +1,1 @@
+- [Docs Registry History](project_docs_registry.md) — tracks all files added to the CLAUDE.md docs list and when they were registered
